@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>URL Shortener</title>
+</head>
+<body>
+
+<style>
+    .container{
+        position: center;
+        text-align: center;
+    }
+</style>
+<script>
+   /* function copyToClipboard(id) {
+        //getting text from P tag
+        var copyText = document.getElementById(id);
+        // creating textarea of html
+        var input = document.createElement("textarea");
+        //adding p tag text to textarea
+        input.value = copyText.textContent;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand("Copy");
+        // removing textarea after copy
+        input.remove();
+        alert(input.value);
+    }
+
+    */
+   function copyToClipboard(elementId) {
+
+       // Create a "hidden" input
+       var aux = document.createElement("input");
+
+       // Assign it the value of the specified element
+       aux.setAttribute("value", document.getElementById(elementId).innerHTML);
+
+       // Append it to the body
+       document.body.appendChild(aux);
+
+       // Highlight its content
+       aux.select();
+
+       // Copy the highlighted text
+       document.execCommand("copy");
+
+       // Remove it from the body
+       document.body.removeChild(aux);
+
+   }
+</script>
+<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+<div class="container">
+    <form method="post">
+        <input id="link" name="link"><br>
+        <button id="submit" type="submit">Click to add url</button>
+    </form>
+    <div th:text="${status}">Status</div>
+    <link th:href="'http://localhost:8080/' + ${shortUrl}">
+    <br>
+    <a id="shortUrl" th:if="${shortUrl}!=null" th:href="@{'http://localhost:8080/' + ${shortUrl}}" th:text="'http://localhost:8080/' + ${shortUrl}">Short link</a>
+    <br>
+    <button th:if="${shortUrl}!=null" name="copyLink" onclick="copyToClipboard('shortUrl')">Copy short link</button>
+    <br>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</div>
+
+</body>
+</html>

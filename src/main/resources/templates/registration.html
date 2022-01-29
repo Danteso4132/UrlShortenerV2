@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<style>
+    #main{
+        position:fixed;
+        left:10px;
+        top:5%;
+        border: red 2px solid ;
+        color: black;
+        font-size: 20px;
+        background: white;
+        text-decoration-line: none;
+    }
+    .head{
+        width: 100%;
+        z-index: 1;
+        background-color: rgba(197, 20, 20, 0.7);
+    }
+</style>
+
+<script>
+    function register(){
+        var jsonObject = {};
+
+        const dataLogin = document.getElementById("login");
+        const dataName = document.getElementById("name");
+        const dataPassword = document.getElementById("psw");
+        const dataPasswordRepeat = document.getElementById("psw-repeat");
+
+        if (dataPassword.value == dataPasswordRepeat.value) {
+            jsonObject.login = dataLogin.value;
+            jsonObject.password = dataPassword.value;
+            jsonObject.name = dataName.value;
+
+
+            var jsonString = JSON.stringify(jsonObject);
+            console.log(jsonString);
+            let request = new Request("/registration", {
+                method: 'POST',
+                body: jsonString,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            fetch(request).then(
+                function(response) {
+                    console.log(response);
+                    console.log(response.url);
+                    if (response.status == 200){
+                        location.assign('/login');
+                    }
+                    else{
+                        const status = document.getElementById("status");
+                        dataLogin.value = "";
+                        dataPassword.value = "";
+                        dataPasswordRepeat.value = "";
+                        status.innerHTML = "Возникла проблема с регистрацией. Возможно, логин уже занят".fontcolor("orange");
+                    }
+
+                },
+                function(error) {
+                    console.error(error);
+                }
+            );
+            const status = document.getElementById("status");
+            status.innerText = " ";
+        }
+        else{
+            const status = document.getElementById("status");
+            dataPassword.value = "";
+            dataPasswordRepeat.value = "";
+            status.innerHTML = "Ошибка! Пароли не совпадают".fontcolor("orange");
+        }
+    }
+</script>
+
+
+<div class="head">
+    <div class="grid wide">
+        <div class="row">
+            <div class="col l-4">
+                <a href="/mainPage" class="header-title-link">
+                    <img src="/img/logo.png" alt="">
+                    <h1 class="header-title-link__text">Theater tickets</h1>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<body>
+<div>
+    <form onsubmit="return false">
+        <div class="register-form">
+            <div class="register-box">
+                <h1 class="register-header">СОЗДАНИЕ АККАУНТА</h1>
+                <input type="text" class="register-input" placeholder="Ваш логин" name="login" id="login" maxlength="20" required>
+                <input type="text" class="register-input" placeholder="Ваше имя" name="name" id="name" maxlength="20" required>
+                <input type="password" class="register-input" placeholder="Пароль" name="password" id="psw" maxlength="20" required>
+                <input type="password" class="register-input" placeholder="Пароль ещё раз" name="passwordRepeat" id="psw-repeat" maxlength="20" required>
+                <!--p><input type="checkbox" class="register-input-check">I agree all statements in <a class="register-link" href="#">Terms of service</a></p-->
+                <a th:text="${status}" id="status">Status</a>
+                <button class="register-control" onclick="register()">Зарегестрироваться</button>
+                <p class="register-nav-login">У Вас уже есть аккаунт? <a class="register-link" href="/login" style="font-weight: bold">Вход</a></p>
+            </div>
+        </div>
+</div>
+</form>
+</body>
+</html>
